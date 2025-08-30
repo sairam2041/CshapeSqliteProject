@@ -1,0 +1,36 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Background="snow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Width="auto" Height="50" Grid.Row="0" Grid.Column="1" Margin="20" Background="AntiqueWhite" BorderBrush="DimGray" BorderThickness="1">
+            <TextBlock Text="{Binding Path=TitleName}"
+                       FontWeight="ExtraBold"
+                       Foreground="DimGray"
+                       FontSize="16"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Center"/>
+        </Border>
+
+        <Button Content="テスト処理開始" Foreground="DimGray" FontWeight="Bold" Width="150" Height="50" Click="Button_Click" Grid.Row="2" Grid.Column="1" Background="AntiqueWhite"/>
+    </Grid>
+</Window>
