@@ -1,4 +1,5 @@
-﻿using WpfApp.Repositories.Sql;
+﻿using WpfApp.Models;
+using WpfApp.Repositories.Sql;
 
 namespace WpfApp.Repositories.Base
 {
@@ -13,7 +14,7 @@ namespace WpfApp.Repositories.Base
             _insertData = insertData;
         }
 
-        public IEnumerable<KeyValuePair<string, object>>? CreatePlaceholderValue() =>
+        public List<SqlParameterSet>? CreatePlaceholderValue() =>
             _insertData == null ? null : SqlBuilder.BuildPlaceholders(_insertData);
 
         public string CreateDeleteSqlQuery() => SqlBuilder.BuildDeleteQuery(_tableName);

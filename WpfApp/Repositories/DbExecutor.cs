@@ -1,4 +1,7 @@
-﻿namespace WpfApp.Repositories
+﻿using System.Data.SQLite;
+using WpfApp.Models;
+
+namespace WpfApp.Repositories
 {
     public class DbExecutor
     {
@@ -9,9 +12,45 @@
             _dbPath = dbPath;
         }
 
-        public void ExecuteAll(List<KeyValuePair<string, object?>> sqlInfo)
+        public void ExecuteAll(List<SqlInfoDto> sqlInfoList)
         {
-            // SQLite接続と実行処理をここに記述
+            using var connection = new SQLiteConnection(_dbPath);
+            connection.Open();
+
+            // usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{}の方使おう。
+            var tran = connection.BeginTransaction();
+            try
+            {
+                foreach (SqlInfoDto sqlInfo in sqlInfoList)
+                {
+                    using var command = connection.CreateCommand();
+                    command.CommandText = sqlInfo.sqlQuery;
+                    command.Transaction = tran;
+
+                    if (sqlInfo.ParameterSets is null)
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.Prepare();
+                        foreach (var data in sqlInfo.ParameterSets)
+                        {
+                            foreach (var plh in data.Parameters)
+                            {
+                                command.Parameters.AddWithValue(plh.Key, plh.Value);
+                            }
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                tran.Commit();
+            }
+            catch
+            {
+                tran.Rollback();
+                throw;
+            }
         }
     }
 }

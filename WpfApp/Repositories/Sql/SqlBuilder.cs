@@ -1,4 +1,6 @@
-﻿namespace WpfApp.Repositories.Sql
+﻿using WpfApp.Models;
+
+namespace WpfApp.Repositories.Sql
 {
     public static class SqlBuilder
     {
@@ -10,9 +12,13 @@
             return $"INSERT INTO {tableName} VALUES ({placeholders});";
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> BuildPlaceholders(IEnumerable<KeyValuePair<string, object>> insertData)
+        public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<KeyValuePair<string, object>> insertData)
         {
-            return insertData.Select(kv => new KeyValuePair<string, object>($"${kv.Key}", kv.Value));
+            var placeholderParams = insertData.Select(kv => new KeyValuePair<string, object>($"${kv.Key}", kv.Value)).ToList();
+            
+            return  new List<SqlParameterSet> {
+                new SqlParameterSet { Parameters = placeholderParams }
+            };
         }
     }
 }
