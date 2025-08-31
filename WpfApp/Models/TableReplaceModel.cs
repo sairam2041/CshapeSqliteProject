@@ -4,21 +4,19 @@ namespace WpfApp.Models
 {
     class TableReplaceModel
     {
-        public string TableName { get; set; }
-        public List<Dictionary<string, object>> InsertData { get; }
+        private readonly List<ITableDataReplaceDao> _daoList;
 
-        private readonly ITableDataReplaceDao _dao;
-
-        public TableReplaceModel(string tableName, List<Dictionary<string, object>> insertData, ITableDataReplaceDao dao)
+        public TableReplaceModel(List<ITableDataReplaceDao> daoList)
         {
-            TableName = tableName;
-            InsertData = insertData;
-            _dao = _dao;
+            _daoList = daoList;
         }
 
         public void ExecuteRelpace()
         {
-            _dao.ReplaceTableData();
+            foreach(var dao in _daoList)
+            {
+                dao.ReplaceTableData();
+            }
         }
     }
 }

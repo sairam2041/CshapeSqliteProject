@@ -5,7 +5,7 @@ namespace WpfApp.Repositories.Implementations
 {
     class SampleDao : BaseDao, ITableDataReplaceDao
     {
-        protected List<KeyValuePair<string, object?>> sqlInfo;
+        protected List<KeyValuePair<string, object?>> sqlInfo = new List<KeyValuePair<string, object?>>();
         public SampleDao(IEnumerable<KeyValuePair<string, object>>? insertData) : base("sample", insertData)
         {
         }
