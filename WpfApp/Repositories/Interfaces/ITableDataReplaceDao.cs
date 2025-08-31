@@ -2,6 +2,7 @@
 {
     interface ITableDataReplaceDao
     {
-        public void ReplaceTableData();
+        // 最終的にはDBコネクションを渡す形にしたい
+        public void ReplaceTableData(string dbPath);
     }
 }

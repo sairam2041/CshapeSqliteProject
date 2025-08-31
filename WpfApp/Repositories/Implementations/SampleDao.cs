@@ -10,16 +10,17 @@ namespace WpfApp.Repositories.Implementations
         {
         }
 
-        public void ReplaceTableData()
+        public void ReplaceTableData(string dbPath)
         {
-            string dSql = createDeleteSqlQuery();
+            string dSql = CreateDeleteSqlQuery();
             sqlInfo.Add(new KeyValuePair<string, object?>(dSql, null));
 
-            string iSql = createInsertSqlQuery();
-            var insertData = createPlaceholderValue();
+            string iSql = CreateInsertSqlQuery();
+            var insertData = CreatePlaceholderValue();
             sqlInfo.Add(new KeyValuePair<string, object?>(iSql, insertData));
 
-            executeAll(sqlInfo);
+            var executor = new DbExecutor(dbPath);
+            executor.ExecuteAll(sqlInfo);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace WpfApp.Repositories.Base
+﻿using WpfApp.Repositories.Sql;
+
+namespace WpfApp.Repositories.Base
 {
     public abstract class BaseDao
     {
@@ -11,24 +13,12 @@
             _insertData = insertData;
         }
 
-        public IEnumerable<KeyValuePair<string, object>>? createPlaceholderValue()
-        {
-            return _insertData?.Select(kv => new KeyValuePair<string, object>($"${kv.Key}", kv.Value));
-        }
+        public IEnumerable<KeyValuePair<string, object>>? CreatePlaceholderValue() =>
+            _insertData == null ? null : SqlBuilder.BuildPlaceholders(_insertData);
 
-        public string createDeleteSqlQuery()
-        {
-            return "DELETE FROM " + _tableName + ";";
-        }
+        public string CreateDeleteSqlQuery() => SqlBuilder.BuildDeleteQuery(_tableName);
 
-        public string createInsertSqlQuery()
-        {
-            return "INSERT INTO " + _tableName + " VALUES (" + _insertData?.Select(d => "$" + d.Key) + ");" ;
-        }
-
-        public void executeAll(List<KeyValuePair<string, object?>> sqlInfo)
-        {
-            // toDo SQLiteを用いたDB操作
-        }
+        public string CreateInsertSqlQuery() =>
+            _insertData == null ? "" : SqlBuilder.BuildInsertQuery(_tableName, _insertData);
     }
 }
