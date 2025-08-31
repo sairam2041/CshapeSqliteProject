@@ -14,10 +14,10 @@ namespace WpfApp.Repositories
 
         public void ExecuteAll(List<SqlInfoDto> sqlInfoList)
         {
+            // usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{}の方使おう。
             using var connection = new SQLiteConnection(_dbPath);
             connection.Open();
 
-            // usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{}の方使おう。
             var tran = connection.BeginTransaction();
             try
             {
