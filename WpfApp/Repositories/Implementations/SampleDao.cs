@@ -1,13 +1,13 @@
-﻿using WpfApp.Repositories.Interfaces;
+﻿using WpfApp.Models;
 using WpfApp.Repositories.Base;
-using WpfApp.Models;
+using WpfApp.Repositories.Interfaces;
 
 namespace WpfApp.Repositories.Implementations
 {
     class SampleDao : BaseDao, ITableDataReplaceDao
     {
         protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
-        public SampleDao(IEnumerable<KeyValuePair<string, object>>? insertData) : base("sample", insertData)
+        public SampleDao(IEnumerable<Dictionary<string, object>>? insertData) : base("sample", insertData)
         {
         }
 

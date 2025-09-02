@@ -6,19 +6,44 @@ namespace WpfApp.Repositories.Sql
     {
         public static string BuildDeleteQuery(string tableName) => $"DELETE FROM {tableName};";
 
-        public static string BuildInsertQuery(string tableName, IEnumerable<KeyValuePair<string, object>> insertData)
+        public static string BuildInsertQuery(string tableName, IEnumerable<Dictionary<string, object>> insertData)
         {
-            var placeholders = string.Join(", ", insertData.Select(kv => $"${kv.Key}"));
+            // 最初の1行目のキーを使ってプレースホルダーを構築
+            var firstRow = insertData.FirstOrDefault();
+
+            if (firstRow == null || firstRow.Count == 0)
+            {
+                throw new ArgumentException("insertData に有効なデータが含まれていません。");
+            }
+
+            var placeholders = string.Join(", ", firstRow.Keys.Select(key => $"${key}"));
+
             return $"INSERT INTO {tableName} VALUES ({placeholders});";
         }
 
-        public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<KeyValuePair<string, object>> insertData)
+        public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<Dictionary<string, object>> insertData)
         {
-            var placeholderParams = insertData.Select(kv => new KeyValuePair<string, object>($"${kv.Key}", kv.Value)).ToList();
-            
-            return  new List<SqlParameterSet> {
-                new SqlParameterSet { Parameters = placeholderParams }
-            };
+            var result = new List<SqlParameterSet>();
+
+            foreach (var row in insertData)
+            {
+                var paramList = new List<Dictionary<string, object>>();
+
+                foreach (var kv in row)
+                {
+                    paramList.Add(new Dictionary<string, object>
+            {
+                { $"${kv.Key}", kv.Value }
+            });
+                }
+
+                result.Add(new SqlParameterSet
+                {
+                    Parameters = paramList
+                });
+            }
+
+            return result;
         }
     }
 }
