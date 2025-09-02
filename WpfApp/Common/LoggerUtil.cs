@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Diagnostics;
 
 namespace WpfApp.Common
 {
@@ -40,7 +41,12 @@ namespace WpfApp.Common
 
         private void WriteLog(string level, string message)
         {
-            var logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{level}] {message}";
+            var stackTrace = new StackTrace();
+            var frame = stackTrace.GetFrame(2); // logger呼び出し元
+            var method = frame?.GetMethod();
+            var className = method?.DeclaringType?.Name;
+
+            var logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{level}] class: {className} {message}";
             _wirter.WriteLine(logEntry);
         }
 
