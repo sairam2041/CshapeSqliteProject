@@ -36,9 +36,12 @@ namespace WpfApp.Repositories
                         command.Prepare();
                         foreach (var data in sqlInfo.ParameterSets)
                         {
-                            foreach (var plh in data.Parameters)
+                            foreach (var param in data.Parameters)
                             {
-                                command.Parameters.AddWithValue(plh.Key, plh.Value);
+                                foreach(var cl in param)
+                                {
+                                    command.Parameters.AddWithValue(cl.Key, cl.Value);
+                                }
                             }
                             command.ExecuteNonQuery();
                         }

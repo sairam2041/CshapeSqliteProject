@@ -8,6 +8,6 @@
 
     public class SqlParameterSet
     {
-        public List<KeyValuePair<string, object>> Parameters { get; set; } = new();
+        public List<Dictionary<string, object>> Parameters { get; set; } = new();
     }
 }

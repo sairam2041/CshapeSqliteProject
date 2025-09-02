@@ -6,9 +6,9 @@ namespace WpfApp.Repositories.Base
     public abstract class BaseDao
     {
         protected string _tableName;
-        protected IEnumerable<KeyValuePair<string, object>>? _insertData;
+        protected IEnumerable<Dictionary<string, object>>? _insertData;
 
-        public BaseDao(string tableName, IEnumerable<KeyValuePair<string, object>>? insertData)
+        public BaseDao(string tableName, IEnumerable<Dictionary<string, object>>? insertData)
         {
             _tableName = tableName;
             _insertData = insertData;
