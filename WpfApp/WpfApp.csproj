@@ -10,16 +10,22 @@
 
   <ItemGroup>
     <None Remove="Data\sample.csv" />
+<<<<<<< HEAD
     <None Remove="Db\sample.db" />
+=======
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Data\sample.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+<<<<<<< HEAD
     <Content Include="Db\sample.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+=======
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
   </ItemGroup>
 
   <ItemGroup>

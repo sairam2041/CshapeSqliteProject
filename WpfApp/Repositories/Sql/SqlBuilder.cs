@@ -6,7 +6,11 @@ namespace WpfApp.Repositories.Sql
     {
         public static string BuildDeleteQuery(string tableName) => $"DELETE FROM {tableName};";
 
+<<<<<<< HEAD
         public static string BuildInsertQuery(string tableName, IEnumerable<IDictionary<string, object>> insertData)
+=======
+        public static string BuildInsertQuery(string tableName, IEnumerable<Dictionary<string, object>> insertData)
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
         {
             // 最初の1行目のキーを使ってプレースホルダーを構築
             var firstRow = insertData.FirstOrDefault();
@@ -21,7 +25,11 @@ namespace WpfApp.Repositories.Sql
             return $"INSERT INTO {tableName} VALUES ({placeholders});";
         }
 
+<<<<<<< HEAD
         public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<IDictionary<string, object>> insertData)
+=======
+        public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<Dictionary<string, object>> insertData)
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
         {
             var result = new List<SqlParameterSet>();
 
