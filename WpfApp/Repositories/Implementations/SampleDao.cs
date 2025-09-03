@@ -1,13 +1,16 @@
-﻿using WpfApp.Models;
+﻿using CsvHelper;
+using System.IO;
+using WpfApp.Models;
 using WpfApp.Repositories.Base;
 using WpfApp.Repositories.Interfaces;
+using WpfApp.Common;
 
 namespace WpfApp.Repositories.Implementations
 {
     class SampleDao : BaseDao, ITableDataReplaceDao
     {
         protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
-        public SampleDao(IEnumerable<Dictionary<string, object>>? insertData) : base("sample", insertData)
+        public SampleDao() : base("sample", ReadTestData())
         {
         }
 
@@ -22,6 +25,12 @@ namespace WpfApp.Repositories.Implementations
 
             var executor = new DbExecutor(dbPath);
             executor.ExecuteAll(sqlInfo);
+        }
+
+        private static IEnumerable<IDictionary<string, object>> ReadTestData()
+        {
+            var cUtil = new CsvReadUtil("sample.csv");
+            return (IEnumerable<IDictionary<string, object>>)cUtil.CsvRead();
         }
     }
 }

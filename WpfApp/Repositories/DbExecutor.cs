@@ -1,4 +1,6 @@
 ﻿using System.Data.SQLite;
+using System.Diagnostics;
+using System.IO;
 using WpfApp.Models;
 
 namespace WpfApp.Repositories
@@ -15,7 +17,10 @@ namespace WpfApp.Repositories
         public void ExecuteAll(List<SqlInfoDto> sqlInfoList)
         {
             // usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{}の方使おう。
-            using var connection = new SQLiteConnection(_dbPath);
+            string fullPath = Path.GetFullPath(_dbPath);
+
+            // @を付けると日本語のエスケープが不要になる
+            using var connection = new SQLiteConnection(@$"Data Source={fullPath};Version=3;");
             connection.Open();
 
             var tran = connection.BeginTransaction();
