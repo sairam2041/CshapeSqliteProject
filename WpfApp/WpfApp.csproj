@@ -9,16 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< Updated upstream
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
-=======
     <None Remove="Data\sample.csv" />
+    <None Remove="Db\sample.db" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Data\sample.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Db\sample.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -33,5 +32,4 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
   </ItemGroup>
 
->>>>>>> Stashed changes
 </Project>

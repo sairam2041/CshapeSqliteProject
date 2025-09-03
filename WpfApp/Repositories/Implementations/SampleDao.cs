@@ -1,0 +1,46 @@
+<<<<<<< HEAD
+﻿using CsvHelper;
+using System.IO;
+using WpfApp.Models;
+using WpfApp.Repositories.Base;
+using WpfApp.Repositories.Interfaces;
+using WpfApp.Common;
+=======
+﻿using WpfApp.Models;
+using WpfApp.Repositories.Base;
+using WpfApp.Repositories.Interfaces;
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
+
+namespace WpfApp.Repositories.Implementations
+{
+    class SampleDao : BaseDao, ITableDataReplaceDao
+    {
+        protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
+<<<<<<< HEAD
+        public SampleDao() : base("sample", ReadTestData())
+=======
+        public SampleDao(IEnumerable<Dictionary<string, object>>? insertData) : base("sample", insertData)
+>>>>>>> e9d79d644fc75ec0d4af6d9d843a1de5b305f45d
+        {
+        }
+
+        public void ReplaceTableData(string dbPath)
+        {
+            string dSql = CreateDeleteSqlQuery();
+            sqlInfo.Add(new SqlInfoDto { sqlQuery = dSql, ParameterSets = null });
+
+            string iSql = CreateInsertSqlQuery();
+            var insertData = CreatePlaceholderValue();
+            sqlInfo.Add(new SqlInfoDto { sqlQuery = iSql, ParameterSets = insertData });
+
+            var executor = new DbExecutor(dbPath);
+            executor.ExecuteAll(sqlInfo);
+        }
+
+        private static IEnumerable<IDictionary<string, object>> ReadTestData()
+        {
+            var cUtil = new CsvReadUtil("sample.csv");
+            return (IEnumerable<IDictionary<string, object>>)cUtil.CsvRead();
+        }
+    }
+}
