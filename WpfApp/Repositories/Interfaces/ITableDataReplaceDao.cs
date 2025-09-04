@@ -1,8 +1,10 @@
-﻿namespace WpfApp.Repositories.Interfaces
+﻿using System.Data.SQLite;
+
+namespace WpfApp.Repositories.Interfaces
 {
     interface ITableDataReplaceDao
     {
         // 最終的にはDBコネクションを渡す形にしたい
-        public void ReplaceTableData(string dbPath);
+        public void ReplaceTableData(SQLiteConnection conn, SQLiteTransaction tran);
     }
 }

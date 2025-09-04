@@ -1,36 +1,28 @@
 ﻿using System.Data.SQLite;
-using System.Diagnostics;
-using System.IO;
 using WpfApp.Models;
 
 namespace WpfApp.Repositories
 {
     public class DbExecutor
     {
-        private string _dbPath;
-        public DbExecutor(string dbPath)
+        private SQLiteConnection _conn;
+        SQLiteTransaction _tran;
+        public DbExecutor(SQLiteConnection conn, SQLiteTransaction tran)
         {
             // 一旦文字列DBパス情報を保持する形に
-            _dbPath = dbPath;
+            _conn = conn;
+            _tran = tran;
         }
 
-        public void ExecuteAll(List<SqlInfoDto> sqlInfoList)
+        public void ExecuteAll(List<SqlInfoDto> sqlInfoList, bool isCommit = false)
         {
-            // usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{}の方使おう。
-            string fullPath = Path.GetFullPath(_dbPath);
-
-            // @を付けると日本語のエスケープが不要になる
-            using var connection = new SQLiteConnection(@$"Data Source={fullPath};Version=3;");
-            connection.Open();
-
-            var tran = connection.BeginTransaction();
             try
             {
                 foreach (SqlInfoDto sqlInfo in sqlInfoList)
                 {
-                    using var command = connection.CreateCommand();
+                    using var command = _conn.CreateCommand();
                     command.CommandText = sqlInfo.sqlQuery;
-                    command.Transaction = tran;
+                    command.Transaction = _tran;
 
                     if (sqlInfo.ParameterSets is null)
                     {
@@ -52,11 +44,14 @@ namespace WpfApp.Repositories
                         }
                     }
                 }
-                tran.Commit();
+                if (isCommit)
+                {
+                    _tran.Commit();
+                }
             }
             catch
             {
-                tran.Rollback();
+                _tran.Rollback();
                 throw;
             }
         }

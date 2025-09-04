@@ -4,6 +4,7 @@ using WpfApp.Models;
 using WpfApp.Repositories.Base;
 using WpfApp.Repositories.Interfaces;
 using WpfApp.Common;
+using System.Data.SQLite;
 
 namespace WpfApp.Repositories.Implementations
 {
@@ -14,7 +15,7 @@ namespace WpfApp.Repositories.Implementations
         {
         }
 
-        public void ReplaceTableData(string dbPath)
+        public void ReplaceTableData(SQLiteConnection conn, SQLiteTransaction tran)
         {
             string dSql = CreateDeleteSqlQuery();
             sqlInfo.Add(new SqlInfoDto { sqlQuery = dSql, ParameterSets = null });
@@ -23,7 +24,7 @@ namespace WpfApp.Repositories.Implementations
             var insertData = CreatePlaceholderValue();
             sqlInfo.Add(new SqlInfoDto { sqlQuery = iSql, ParameterSets = insertData });
 
-            var executor = new DbExecutor(dbPath);
+            var executor = new DbExecutor(conn, tran);
             executor.ExecuteAll(sqlInfo);
         }
 
