@@ -9,16 +9,16 @@ namespace WpfApp.Repositories.Implementations
     class Sample2Dao : BaseDao, ITableDataReplaceDao
     {
         protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
-        public Sample2Dao() : base("sample2", ReadTestData())
+        public Sample2Dao() : base("sample2.db", "sample", ReadTestData())
         {
         }
 
-        public void ReplaceTableData(SQLiteConnection conn, SQLiteTransaction tran)
+        public void ReplaceTableData(SQLiteConnection conn, SQLiteTransaction tran, bool isAttached = false)
         {
-            string dSql = CreateDeleteSqlQuery();
+            string dSql = CreateDeleteSqlQuery(isAttached);
             sqlInfo.Add(new SqlInfoDto { sqlQuery = dSql, ParameterSets = null });
 
-            string iSql = CreateInsertSqlQuery();
+            string iSql = CreateInsertSqlQuery(isAttached);
             var insertData = CreatePlaceholderValue();
             sqlInfo.Add(new SqlInfoDto { sqlQuery = iSql, ParameterSets = insertData });
 

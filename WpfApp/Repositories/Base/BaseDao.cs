@@ -1,25 +1,31 @@
 ﻿using WpfApp.Models;
 using WpfApp.Repositories.Sql;
+using System.IO;
 
 namespace WpfApp.Repositories.Base
 {
     public abstract class BaseDao
     {
-        protected string _tableName;
-        protected IEnumerable<IDictionary<string, object>>? _insertData;
+        public string SchemmaName { get; init; }
+        public string TableName { get; init; }
+        private IEnumerable<IDictionary<string, object>>? InsertData { get; set; }
 
-        public BaseDao(string tableName, IEnumerable<IDictionary<string, object>>? insertData)
+        public BaseDao(string schemaName, string tableName, IEnumerable<IDictionary<string, object>>? insertData)
         {
-            _tableName = tableName;
-            _insertData = insertData;
+            SchemmaName = schemaName;
+            TableName = tableName;
+            InsertData = insertData;
         }
 
         public List<SqlParameterSet>? CreatePlaceholderValue() =>
-            _insertData == null ? null : SqlBuilder.BuildPlaceholders(_insertData);
+            InsertData == null ? null : SqlBuilder.BuildPlaceholders(InsertData);
 
-        public string CreateDeleteSqlQuery() => SqlBuilder.BuildDeleteQuery(_tableName);
+        public string CreateDeleteSqlQuery(bool isAttached = false) => SqlBuilder.BuildDeleteQuery(GetTableReference(isAttached));
 
-        public string CreateInsertSqlQuery() =>
-            _insertData == null ? "" : SqlBuilder.BuildInsertQuery(_tableName, _insertData);
+        public string CreateInsertSqlQuery(bool isAttached = false) =>
+            InsertData == null ? "" : SqlBuilder.BuildInsertQuery(GetTableReference(isAttached), InsertData);
+
+        private string GetTableReference(bool isAttached) =>
+             isAttached ? $"{Path.GetFileNameWithoutExtension(SchemmaName)}.{TableName}" : TableName;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using WpfApp.Repositories.Interfaces;
 using System.Data.SQLite;
 using System.IO;
+using WpfApp.Repositories.Base;
 
 namespace WpfApp.Models
 {
@@ -15,11 +16,12 @@ namespace WpfApp.Models
 
         public void ExecuteRelpace()
         {
-            // 最終的には、複数DBファイルをアタッチしてコネクションを作成する形にしたい。
-            string dbPath = "Db/sample.db";
+            var dbFileName= ((BaseDao)_daoList.First()).SchemmaName;
+            HashSet<string> dbFiles = new HashSet<string>() { dbFileName };
+
             //usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{ }
             //の方使おう。
-            string fullPath = Path.GetFullPath(dbPath);
+            string fullPath = Path.GetFullPath($"Db/{dbFileName}");
 
             // @を付けると日本語のエスケープが不要になる
             using var connection = new SQLiteConnection(@$"Data Source={fullPath};Version=3;");
@@ -29,7 +31,16 @@ namespace WpfApp.Models
 
             foreach (var dao in _daoList)
             {
-                dao.ReplaceTableData(connection, tran);
+                var _dbFile = ((BaseDao)dao).SchemmaName;
+                var needAttach = !dbFiles.Contains(_dbFile);
+                if (needAttach) {
+                    var attachCommand = new SQLiteCommand($"ATTACH DATABASE {_dbFile} AS {Path.GetFileNameWithoutExtension(_dbFile)}", connection);
+                    attachCommand.ExecuteNonQuery();
+
+                    dbFiles.Add(_dbFile);
+                }
+
+                dao.ReplaceTableData(connection, tran, needAttach);
             }
         }
     }
