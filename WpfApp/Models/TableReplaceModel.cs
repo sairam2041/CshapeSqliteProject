@@ -16,12 +16,13 @@ namespace WpfApp.Models
 
         public void ExecuteRelpace()
         {
-            var dbFileName= ((BaseDao)_daoList.First()).SchemmaName;
-            HashSet<string> dbFiles = new HashSet<string>() { dbFileName };
+            // mainのDBファイル名
+            var mainDbFile = ((BaseDao)_daoList.First()).SchemmaName;
+            HashSet<string> dbFiles = new HashSet<string>() { mainDbFile };
 
             //usingは１行で書けるし、こちらの方が見やすい。スコープを明示的にしたい時のみ{ }
             //の方使おう。
-            string fullPath = Path.GetFullPath($"Db/{dbFileName}");
+            string fullPath = Path.GetFullPath($"Db/{mainDbFile}");
 
             // @を付けると日本語のエスケープが不要になる
             using var connection = new SQLiteConnection(@$"Data Source={fullPath};Version=3;");
@@ -31,16 +32,16 @@ namespace WpfApp.Models
 
             foreach (var dao in _daoList)
             {
-                var _dbFile = ((BaseDao)dao).SchemmaName;
-                var needAttach = !dbFiles.Contains(_dbFile);
-                if (needAttach) {
-                    var attachCommand = new SQLiteCommand($"ATTACH DATABASE {_dbFile} AS {Path.GetFileNameWithoutExtension(_dbFile)}", connection);
+                var dbFile = ((BaseDao)dao).SchemmaName;
+                if (!dbFiles.Contains(dbFile)) {
+                    var attachCommand = new SQLiteCommand($"ATTACH DATABASE {dbFile} AS {Path.GetFileNameWithoutExtension(dbFile)}", connection);
                     attachCommand.ExecuteNonQuery();
 
-                    dbFiles.Add(_dbFile);
+                    dbFiles.Add(dbFile);
                 }
 
-                dao.ReplaceTableData(connection, tran, needAttach);
+                // mainDBファイルと異なる場合はアタッチしたDBファイルと見なす
+                dao.ReplaceTableData(connection, tran, (mainDbFile != dbFile));
             }
         }
     }
