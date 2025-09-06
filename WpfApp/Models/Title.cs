@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
 
+/// <summary>
+/// 確認用のモデルクラス
+/// </summary>
 public class Title : INotifyPropertyChanged
 {
     private string _titleName;

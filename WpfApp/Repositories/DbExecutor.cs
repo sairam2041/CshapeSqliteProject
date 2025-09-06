@@ -7,14 +7,14 @@ namespace WpfApp.Repositories
     {
         private SQLiteConnection _conn;
         SQLiteTransaction _tran;
+        
         public DbExecutor(SQLiteConnection conn, SQLiteTransaction tran)
         {
-            // 一旦文字列DBパス情報を保持する形に
             _conn = conn;
             _tran = tran;
         }
 
-        public void ExecuteAll(List<SqlInfoDto> sqlInfoList, bool isCommit = false)
+        public void ExecuteAll(List<SqlInfoDto> sqlInfoList)
         {
             try
             {
@@ -30,6 +30,7 @@ namespace WpfApp.Repositories
                     }
                     else
                     {
+                        // SQL情報を解析して使いまわす
                         command.Prepare();
                         foreach (var data in sqlInfo.ParameterSets)
                         {
@@ -43,10 +44,6 @@ namespace WpfApp.Repositories
                             command.ExecuteNonQuery();
                         }
                     }
-                }
-                if (isCommit)
-                {
-                    _tran.Commit();
                 }
             }
             catch

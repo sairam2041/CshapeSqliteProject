@@ -9,6 +9,7 @@ namespace WpfApp.Repositories.Implementations
     class Sample2Dao : BaseDao, ITableDataReplaceDao
     {
         protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
+        
         public Sample2Dao() : base("sample2.db", "sample", ReadTestData())
         {
         }
@@ -23,8 +24,8 @@ namespace WpfApp.Repositories.Implementations
             sqlInfo.Add(new SqlInfoDto { sqlQuery = iSql, ParameterSets = insertData });
 
             var executor = new DbExecutor(conn, tran);
-            // 動的にcommitの判断をしたい
-            executor.ExecuteAll(sqlInfo, true);
+
+            executor.ExecuteAll(sqlInfo);
         }
 
         private static IEnumerable<IDictionary<string, object>> ReadTestData()

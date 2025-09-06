@@ -9,6 +9,8 @@ namespace WpfApp.Repositories.Implementations
     class SampleDao : BaseDao, ITableDataReplaceDao
     {
         protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
+        
+        // 引数にテーブルとスキーマを置けば、本クラス1つで複数DB・テーブルを表現できる気がする。
         public SampleDao() : base("sample.db", "sample", ReadTestData())
         {
         }

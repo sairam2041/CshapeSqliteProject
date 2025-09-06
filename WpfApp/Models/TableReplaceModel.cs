@@ -14,6 +14,8 @@ namespace WpfApp.Models
             _daoList = daoList;
         }
 
+        // これテーブル洗い変えのみしか対応していない。
+        // コマンドとDB操作を分別すれば、他のコマンドも対応できるように出来る気がする
         public void ExecuteRelpace()
         {
             // mainのDBファイル名
@@ -43,6 +45,8 @@ namespace WpfApp.Models
                 // mainDBファイルと異なる場合はアタッチしたDBファイルと見なす
                 dao.ReplaceTableData(connection, tran, (mainDbFile != dbFile));
             }
+
+            tran.Commit();
         }
     }
 }
