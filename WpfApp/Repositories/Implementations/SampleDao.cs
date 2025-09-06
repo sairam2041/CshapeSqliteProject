@@ -8,10 +8,9 @@ namespace WpfApp.Repositories.Implementations
 {
     class SampleDao : BaseDao, ITableDataReplaceDao
     {
-        protected List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
+        private List<SqlInfoDto> sqlInfo = new List<SqlInfoDto>();
         
-        // 引数にテーブルとスキーマを置けば、本クラス1つで複数DB・テーブルを表現できる気がする。
-        public SampleDao() : base("sample.db", "sample", ReadTestData())
+        public SampleDao(string schema, string table, string csvFileName) : base(schema, table, ReadCsvData(csvFileName))
         {
         }
 
@@ -28,9 +27,9 @@ namespace WpfApp.Repositories.Implementations
             executor.ExecuteAll(sqlInfo);
         }
 
-        private static IEnumerable<IDictionary<string, object>> ReadTestData()
+        private static IEnumerable<IDictionary<string, object>> ReadCsvData(string csvFileName)
         {
-            var cUtil = new CsvReadUtil("sample.csv");
+            var cUtil = new CsvReadUtil(csvFileName);
             return (IEnumerable<IDictionary<string, object>>)cUtil.CsvRead();
         }
     }
