@@ -1,25 +1,17 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using WpfApp.Commands;
+using WpfApp.ViewModels.Base;
 
-namespace WpfApp.ViewModels
+namespace WpfApp.ViewModels.Implementations
 {
-    internal class TitleViewModel : INotifyPropertyChanged
+    internal class TitleViewModel : BaseViewModel
     {
         private TitleModel _model;
         private string _titleName;
         public string TitleName
         {
             get => _titleName;
-            set
-            {
-                if (_titleName != value)
-                {
-                    _titleName = value;
-                    OnPropertyChanged(nameof(TitleName)); // UIが更新される
-                }
-            }
+            set => SetProperty(ref _titleName, value);
         }
 
         public ICommand ShowMessageCommand { get; }
@@ -35,9 +27,5 @@ namespace WpfApp.ViewModels
                 TitleName = _model.TitleName;
             });
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

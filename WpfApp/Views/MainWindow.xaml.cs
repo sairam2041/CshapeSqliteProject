@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using WpfApp.ViewModels;
+using WpfApp.ViewModels.Implementations;
 
 namespace WpfApp
 {
