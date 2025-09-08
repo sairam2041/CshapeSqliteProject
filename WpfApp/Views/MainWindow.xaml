@@ -31,6 +31,6 @@
                        VerticalAlignment="Center"/>
         </Border>
 
-        <Button Content="テスト処理開始" Foreground="DimGray" FontWeight="Bold" Width="150" Height="50" Command="{Binding ShowMessageCommand}" Grid.Row="2" Grid.Column="1" Background="AntiqueWhite"/>
+        <Button Content="テスト処理開始" Foreground="DimGray" FontWeight="Bold" Width="150" Height="50" Command="{Binding ReplaceTable}" Grid.Row="2" Grid.Column="1" Background="AntiqueWhite"/>
     </Grid>
 </Window>
