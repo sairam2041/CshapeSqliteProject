@@ -36,7 +36,7 @@ namespace WpfApp.Models
             {
                 var dbFile = ((BaseDao)dao).SchemmaName;
                 if (!dbFiles.Contains(dbFile)) {
-                    var attachCommand = new SQLiteCommand($"ATTACH DATABASE {dbFile} AS {Path.GetFileNameWithoutExtension(dbFile)}", connection);
+                    var attachCommand = new SQLiteCommand($"ATTACH DATABASE '{Path.GetFullPath($"Db/{dbFile}")}' AS {Path.GetFileNameWithoutExtension(dbFile)};", connection);
                     attachCommand.ExecuteNonQuery();
 
                     dbFiles.Add(dbFile);
