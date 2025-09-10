@@ -6,10 +6,10 @@ namespace WpfApp.Repositories.Sql
     {
         public static string BuildDeleteQuery(string tableName) => $"DELETE FROM {tableName};";
 
-        public static string BuildInsertQuery(string tableName, IEnumerable<IDictionary<string, object>> insertData)
+        public static string BuildInsertQuery(string tableName, IEnumerable<IDictionary<string, object>> value)
         {
             // 最初の1行目のキーを使ってプレースホルダーを構築
-            var firstRow = insertData.FirstOrDefault();
+            var firstRow = value.FirstOrDefault();
 
             if (firstRow == null || firstRow.Count == 0)
             {
@@ -21,7 +21,47 @@ namespace WpfApp.Repositories.Sql
             return $"INSERT INTO {tableName} VALUES ({placeholders});";
         }
 
-        public static List<SqlParameterSet> BuildPlaceholders(IEnumerable<IDictionary<string, object>> insertData)
+        public static string BuildUpdateQuery(string tableName, IDictionary<string, object> value, IDictionary<string, object>? where)
+        {
+            List<string> setAssignments = new List<string>();
+            foreach (var key in value.Keys)
+            {
+                setAssignments.Add($"{key} = ${key}");
+            }
+
+            if (where is not null)
+            {
+                List<string> whereAssignments = new List<string>();
+                foreach (var key in where.Keys)
+                {
+                    whereAssignments.Add($"{key} = ${key}");
+                }
+
+                return $"UPDATE {tableName} SET {String.Join(", ", setAssignments.ToArray())} WHERE {String.Join(", ", whereAssignments.ToArray())};";
+            }
+
+             return $"UPDATE {tableName} SET {String.Join(", ", setAssignments.ToArray())};";
+        }
+
+        internal static string BuildSelectQuery(string tableName, string[]? value, IDictionary<string, object>? where)
+        {
+            var selectAssignments = value is null ? "*" : String.Join(", ", value);
+
+            if (where is not null)
+            {
+                List<string> whereAssignments = new List<string>();
+                foreach (var key in where.Keys)
+                {
+                    whereAssignments.Add($"{key} = ${key}");
+                }
+
+                return $"SELECT {selectAssignments} FROM {tableName} WHERE {String.Join(",", whereAssignments.ToArray())};";
+            }
+
+            return $"SELECT {selectAssignments} FROM {tableName};";
+        }
+
+        public static IEnumerable<SqlParameterSet> BuildPlaceholders(IEnumerable<IDictionary<string, object>> insertData)
         {
             var result = new List<SqlParameterSet>();
 

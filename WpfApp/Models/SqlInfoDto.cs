@@ -2,8 +2,11 @@
 {
     public class SqlInfoDto
     {
-        public required string sqlQuery { get; set; }
-        public IEnumerable<SqlParameterSet>? ParameterSets { get; set; }
+        public required string SqlQuery { get; set; }
+
+        public IEnumerable<SqlParameterSet>? WhereParameterSets { get; set; }
+
+        public IEnumerable<SqlParameterSet>? ValueParameterSets { get; set; }
     }
 
     public class SqlParameterSet
