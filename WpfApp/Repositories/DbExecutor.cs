@@ -21,10 +21,10 @@ namespace WpfApp.Repositories
                 foreach (SqlInfoDto sqlInfo in sqlInfoList)
                 {
                     using var command = _conn.CreateCommand();
-                    command.CommandText = sqlInfo.sqlQuery;
+                    command.CommandText = sqlInfo.SqlQuery;
                     command.Transaction = _tran;
 
-                    if (sqlInfo.ParameterSets is null)
+                    if (sqlInfo.ValueParameterSets is null)
                     {
                         command.ExecuteNonQuery();
                     }
@@ -32,7 +32,7 @@ namespace WpfApp.Repositories
                     {
                         // SQL情報を解析して使いまわす
                         command.Prepare();
-                        foreach (var data in sqlInfo.ParameterSets)
+                        foreach (var data in sqlInfo.ValueParameterSets)
                         {
                             foreach (var param in data.Parameters)
                             {

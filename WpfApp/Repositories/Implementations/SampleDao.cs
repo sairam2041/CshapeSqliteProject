@@ -17,14 +17,18 @@ namespace WpfApp.Repositories.Implementations
         public void ReplaceTableData(SQLiteConnection conn, SQLiteTransaction tran, bool isAttached = false)
         {
             string dSql = CreateDeleteSqlQuery(isAttached);
-            sqlInfo.Add(new SqlInfoDto { sqlQuery = dSql, ParameterSets = null });
+            sqlInfo.Add(new SqlInfoDto { SqlQuery = dSql, ValueParameterSets = null });
 
             string iSql = CreateInsertSqlQuery(isAttached);
             var insertData = CreatePlaceholderValue();
-            sqlInfo.Add(new SqlInfoDto { sqlQuery = iSql, ParameterSets = insertData });
+            sqlInfo.Add(new SqlInfoDto { SqlQuery = iSql, ValueParameterSets = insertData });
 
             var executor = new DbExecutor(conn, tran);
             executor.ExecuteAll(sqlInfo);
+        }
+
+        public void ExecuteAllSql(SQLiteConnection conn, SQLiteTransaction tran, bool isAttached = false) { 
+        
         }
 
         private static IEnumerable<IDictionary<string, object>> ReadCsvData(string csvFileName)

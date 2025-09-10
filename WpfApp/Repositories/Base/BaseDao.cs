@@ -17,7 +17,7 @@ namespace WpfApp.Repositories.Base
             InsertData = insertData;
         }
 
-        public List<SqlParameterSet>? CreatePlaceholderValue() =>
+        public IEnumerable<SqlParameterSet>? CreatePlaceholderValue() =>
             InsertData == null ? null : SqlBuilder.BuildPlaceholders(InsertData);
 
         public string CreateDeleteSqlQuery(bool isAttached = false) => SqlBuilder.BuildDeleteQuery(GetTableReference(isAttached));
