@@ -21,6 +21,7 @@ namespace WpfApp.Repositories.Base
             InsertData == null ? null : SqlBuilder.BuildPlaceholders(InsertData);
 
         public string CreateDeleteSqlQuery(bool isAttached = false) => SqlBuilder.BuildDeleteQuery(GetTableReference(isAttached));
+        public string CreateDeleteSqlInfo(bool isAttached = false) => SqlBuilder.BuildDeleteQuery(GetTableReference(isAttached));
 
         public string CreateInsertSqlQuery(bool isAttached = false) =>
             InsertData == null ? "" : SqlBuilder.BuildInsertQuery(GetTableReference(isAttached), InsertData);
