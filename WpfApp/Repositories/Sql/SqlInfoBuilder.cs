@@ -60,19 +60,19 @@ namespace WpfApp.Repositories.Sql
         {
             ArgumentNullException.ThrowIfNull(dto.UpdateValue);
 
-            var setValue = string.Join(", ", dto.UpdateValue.Select(kv => $"{kv.Key} = {prefix}{kv.Key}_s"));
-            var setSet = dto.UpdateValue.ToDictionary(pair => $"{prefix}{pair.Key}_s", pair => pair.Value);
+            var updateValue = string.Join(", ", dto.UpdateValue.Select(kv => $"{kv.Key} = {prefix}{kv.Key}_s"));
+            var updateSet = dto.UpdateValue.ToDictionary(pair => $"{prefix}{pair.Key}_s", pair => pair.Value);
            
             if (dto.WhereValue is not null)
             {
                 var whereSet = dto.WhereValue.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
                 var whereValue = String.Join(" AND ", whereSet.ToList());
 
-                var mergeSet = setSet.Concat(whereSet).ToDictionary(pair => pair.Key, pair => pair.Value);
+                var mergeSet = updateSet.Concat(whereSet).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-                return new SqlInfoDto { Query = $"UPDATE {tableName} SET {setValue} WHERE {whereValue};", ValueSet = new List<IDictionary<string, object>>() { mergeSet } };
+                return new SqlInfoDto { Query = $"UPDATE {tableName} SET {updateValue} WHERE {whereValue};", ValueSet = new List<IDictionary<string, object>>() { mergeSet } };
             }
-            return new SqlInfoDto { Query = $"UPDATE {tableName} SET {setValue};", ValueSet = new List<IDictionary<string, object>>() { setSet } };
+            return new SqlInfoDto { Query = $"UPDATE {tableName} SET {updateValue};", ValueSet = new List<IDictionary<string, object>>() { updateSet } };
         }
     }
 }
