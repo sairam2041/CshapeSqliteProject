@@ -13,7 +13,17 @@ namespace WpfApp.Repositories.Sql
     public static class SqlInfoBuilder
     {
         private static string prefix = "$";
-        public static SqlInfoDto BuildDeleteInfo(string tableName, SqlQueryParametersDto dto) => new SqlInfoDto() { Query = $"DELETE FROM {tableName};", ValueSet = null };
+        public static SqlInfoDto BuildDeleteInfo(string tableName, SqlQueryParametersDto dto)
+        {
+            if (dto.WhereValue is not null)
+            {
+                var whereSet = dto.WhereValue.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
+                var whereValue = String.Join(" AND ", whereSet.ToList());
+
+                return new SqlInfoDto { Query = $"DELETE FROM {tableName} WHERE {whereValue};", ValueSet = new List<IDictionary<string, object>>() { whereSet } };
+            }
+            return new SqlInfoDto() { Query = $"DELETE FROM {tableName};", ValueSet = null };
+        }
 
         public static SqlInfoDto BuildInsertInfo(string tableName, SqlQueryParametersDto dto)
         {
