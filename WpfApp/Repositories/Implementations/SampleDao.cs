@@ -27,10 +27,6 @@ namespace WpfApp.Repositories.Implementations
             executor.ExecuteAll(sqlInfo);
         }
 
-        public void ExecuteAllSql(SQLiteConnection conn, SQLiteTransaction tran, bool isAttached = false) { 
-        
-        }
-
         private static IEnumerable<IDictionary<string, object>> ReadCsvData(string csvFileName)
         {
             var cUtil = new CsvReadUtil(csvFileName);

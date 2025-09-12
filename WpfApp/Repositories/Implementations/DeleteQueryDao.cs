@@ -1,4 +1,4 @@
-﻿using WpfApp.Models;
+﻿using WpfApp.Dto;
 using WpfApp.Repositories.Base;
 using WpfApp.Repositories.Interfaces;
 using WpfApp.Repositories.Sql;
@@ -11,15 +11,9 @@ namespace WpfApp.Repositories.Implementations
         {
         }
 
-        public string CreateQuey(object value, object? where, bool isAttach = false)
+        public SqlInfoDto GenerateSqlInfo(string tableName, SqlQueryParametersDto dto)
         {
-            string _tableName = isAttach ? Schema + "." + TableName : TableName;
-            return SqlBuilder.BuildDeleteQuery(_tableName);
-        }
-
-        public IEnumerable<SqlParameterSet> CreateParameterSets(object value, object? where)
-        {
-            throw new NotImplementedException();
+            return SqlInfoBuilder.BuildDeleteInfo(tableName, dto);
         }
     }
 }

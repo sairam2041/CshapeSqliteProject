@@ -2,14 +2,24 @@
 
 namespace WpfApp.Repositories.Sql
 {
+    public class SqlQueryParametersDto
+    {
+        public IEnumerable<IDictionary<string, object>>? InsertValue { get; set; }
+        public IEnumerable<string>? SelectColumn { get; set; }
+        public IDictionary<string, object>? WhereValue  { get; set; }
+        public IDictionary<string, object>? UpdateValue { get; set; }
+    }
+
     public static class SqlInfoBuilder
     {
         private static string prefix = "$";
-        public static SqlInfoDto BuildDeleteInfo(string tableName) => new SqlInfoDto() { Query = $"DELETE FROM {tableName};", ValueSet = null };
+        public static SqlInfoDto BuildDeleteInfo(string tableName, SqlQueryParametersDto dto) => new SqlInfoDto() { Query = $"DELETE FROM {tableName};", ValueSet = null };
 
-        public static SqlInfoDto BuildInsertInfo(string tableName, IEnumerable<IDictionary<string, object>> value)
+        public static SqlInfoDto BuildInsertInfo(string tableName, SqlQueryParametersDto dto)
         {
-            var valueSet = value.Select(dict => dict.ToDictionary(pair => $"{prefix}{pair.Key}", pair => pair.Value)).ToList();
+            ArgumentNullException.ThrowIfNull(dto.InsertValue);
+
+            var valueSet = dto.InsertValue.Select(dict => dict.ToDictionary(pair => $"{prefix}{pair.Key}", pair => pair.Value)).ToList();
 
             var firstRow = valueSet.FirstOrDefault();
             if (firstRow == null || firstRow.Count == 0)
@@ -22,13 +32,13 @@ namespace WpfApp.Repositories.Sql
             return new SqlInfoDto { Query = $"INSERT INTO {tableName} VALUES ({placeholders});", ValueSet = valueSet };
         }
 
-        public static SqlInfoDto BuildSelectInfo(string tableName, IEnumerable<string>? column, IDictionary<string, object>? where)
+        public static SqlInfoDto BuildSelectInfo(string tableName, SqlQueryParametersDto dto)
         {
-            var selectValue = column is null ? "*" : String.Join(", ", column);
+            var selectValue = dto.SelectColumn is null ? "*" : String.Join(", ", dto.SelectColumn);
            
-            if(where is not null)
+            if(dto.WhereValue is not null)
             {
-                var whereSet = where.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
+                var whereSet = dto.WhereValue.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
                 var whereValue = String.Join(" AND ", whereSet.ToList());
 
                 return new SqlInfoDto { Query = $"SELECT {selectValue} FROM {tableName} WHERE {whereValue};", ValueSet = new List<IDictionary<string, object>>() { whereSet } };
@@ -36,14 +46,16 @@ namespace WpfApp.Repositories.Sql
             return new SqlInfoDto { Query = $"SELECT {selectValue} FROM {tableName};", ValueSet = null };
         }
 
-        public static SqlInfoDto BuildUpdateInfo(string tableName, IDictionary<string, object> set, IDictionary<string, object>? where)
+        public static SqlInfoDto BuildUpdateInfo(string tableName, SqlQueryParametersDto dto)
         {
-            var setValue = string.Join(", ", set.Select(kv => $"{kv.Key} = {prefix}{kv.Key}_s"));
-            var setSet = set.ToDictionary(pair => $"{prefix}{pair.Key}_s", pair => pair.Value);
+            ArgumentNullException.ThrowIfNull(dto.UpdateValue);
+
+            var setValue = string.Join(", ", dto.UpdateValue.Select(kv => $"{kv.Key} = {prefix}{kv.Key}_s"));
+            var setSet = dto.UpdateValue.ToDictionary(pair => $"{prefix}{pair.Key}_s", pair => pair.Value);
            
-            if (where is not null)
+            if (dto.WhereValue is not null)
             {
-                var whereSet = where.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
+                var whereSet = dto.WhereValue.ToDictionary(pair => $"{prefix}{pair.Key}_w", pair => pair.Value);
                 var whereValue = String.Join(" AND ", whereSet.ToList());
 
                 var mergeSet = setSet.Concat(whereSet).ToDictionary(pair => pair.Key, pair => pair.Value);
